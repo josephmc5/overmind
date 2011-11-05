@@ -90,7 +90,7 @@ def deploy(hostname, config=settings.DEPLOY_FILE):
     class opts:
         log_level = "info"
         logfile = "-"
-        host = "%s@%s" % (settings.DEPLOY_USERNAME, hostname)
+        host = "%s@%s" % (node.username or "root", hostname)
         user = "root"
         ypath = []
         simulate = False
