@@ -28,6 +28,7 @@ See the wiki for architectural info and to know more about the future direction 
 
 * django-piston (for the REST API)
 * IPy (optional, improved IP address validation for the "Dedicated Hardware" plugin)
+* Yaybu (if you want Yaybu configuration management)
 
 ### Example installation on Debian/Ubuntu
 
