@@ -2,8 +2,7 @@ import datetime
 from celery.task import task
 from models import Node, Deployment
 
-
-from plugins.yb import deploy as yaybu_deploy
+from plugins import load_plugins
 
 
 @task
@@ -26,8 +25,7 @@ def deploy(hostname):
     d.save()
 
     try:
-        #FIXME: Need to do some plugin system stuff here
-        rv = yaybu_deploy(d)
+        rv = load_plugins()["yaybu"]().deploy(d)
     except:
         #FIXME: Capture and log any unhandle exceptions
         rv = 256

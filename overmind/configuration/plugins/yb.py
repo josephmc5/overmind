@@ -55,49 +55,53 @@ class OvermindContext(RunContext):
         self.changelog = OvermindChangeLog(self)
 
 
-def deploy(deployment, config=settings.DEPLOY_FILE):
-    """
-    Actually do a deployment to a host using Yaybu.
+class Driver(object):
 
-    :param deployment: A deploy record to track the deployment status
-    :type deployment: overmind.configuration.models.Deployment
-    :param conf: The path to a configuration to deploy
-    :type conf: str
-    :returns: int -- the return code of the remote yaybu process
+    display_name = "Yaybu"
 
-    We use the RemoteRunner API to actually establishes an SSH connection to
-    the target computer and initiate a deployment.
-
-    Because the Yay config is parsed from within Django it can use the
-    ``djangostore`` data binding API to access service metadata directly in the
-    database.
-    """
-
-    node = deployment.node
-
-    # The bulk of the parameters to the RunContext object would normally come
-    # from an OptionParser, in the absence of a proper API we just provide an
-    # object with attributes with the correct settings on.
-    class opts:
-        log_level = "info"
-        logfile = "-"
-        host = "%s@%s" % (node.username or "root", note.hostname)
-        user = "root"
-        ypath = []
-        simulate = False
-        verbose = False
-        resume = True
-        no_resume = False
-        env_passthrough = []
-
-    ctx = OvermindContext(config, opts, d)
-
-    r = RemoteRunner()
-    r.set_interactive(False)
-    r.set_identity_file(settings.DEPLOY_SSH_KEY)
-    r.set_missing_host_key_policy("no")
-    r.load_host_keys(settings.DEPLOY_SSH_KNOWN_HOSTS)
-    rv = r.run(ctx)
-
-    return rv
-
+    def deploy(deployment, config=settings.DEPLOY_FILE):
+        """
+        Actually do a deployment to a host using Yaybu.
+    
+        :param deployment: A deploy record to track the deployment status
+        :type deployment: overmind.configuration.models.Deployment
+        :param conf: The path to a configuration to deploy
+        :type conf: str
+        :returns: int -- the return code of the remote yaybu process
+    
+        We use the RemoteRunner API to actually establishes an SSH connection to
+        the target computer and initiate a deployment.
+    
+        Because the Yay config is parsed from within Django it can use the
+        ``djangostore`` data binding API to access service metadata directly in the
+        database.
+        """
+    
+        node = deployment.node
+    
+        # The bulk of the parameters to the RunContext object would normally come
+        # from an OptionParser, in the absence of a proper API we just provide an
+        # object with attributes with the correct settings on.
+        class opts:
+            log_level = "info"
+            logfile = "-"
+            host = "%s@%s" % (node.username or "root", note.hostname)
+            user = "root"
+            ypath = []
+            simulate = False
+            verbose = False
+            resume = True
+            no_resume = False
+            env_passthrough = []
+    
+        ctx = OvermindContext(config, opts, d)
+    
+        r = RemoteRunner()
+        r.set_interactive(False)
+        r.set_identity_file(settings.DEPLOY_SSH_KEY)
+        r.set_missing_host_key_policy("no")
+        r.load_host_keys(settings.DEPLOY_SSH_KNOWN_HOSTS)
+        rv = r.run(ctx)
+    
+        return rv
+    
