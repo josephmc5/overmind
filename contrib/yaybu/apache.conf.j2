@@ -1,0 +1,31 @@
+<VirtualHost *:80>
+    WSGIScriptReloading On
+    WSGIReloadMechanism Process
+    WSGIDaemonProcess overmind
+    WSGIProcessGroup overmind
+    WSGIApplicationGroup overmind
+    WSGIPassAuthorization On
+
+    WSGIScriptAlias / /var/local/overmind/django.wsgi
+
+    <Location "/">
+        Order Allow,Deny
+        Allow from all
+    </Location>
+
+    <Location "/media">
+        SetHandler None
+    </Location>
+
+    Alias /media {{ project_root }}/media
+
+    <Location "/admin-media">
+        SetHandler None
+    </Location>
+
+    Alias /admin-media {{ project_root }}/media/admin
+
+    ErrorLog /var/log/apache2/overmind-error.log
+    LogLevel info
+    CustomLog /var/log/apache2/overmind-access.log combined
+</VirtualHost>

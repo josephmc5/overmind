@@ -1,0 +1,14 @@
+import os
+import sys
+import site
+
+PROJECT_ROOT = "{{ project_root }}"
+site_packages = os.path.join("{{ venv_root }}", 'lib/python2.6/site-packages')
+site.addsitedir(os.path.abspath(site_packages))
+sys.path.insert(0, PROJECT_ROOT)
+sys.path.insert(0, PROJECT_ROOT + "/overmind")
+os.environ['DJANGO_SETTINGS_MODULE'] = 'overmind.settings'
+
+import django.core.handlers.wsgi
+application = django.core.handlers.wsgi.WSGIHandler()
+

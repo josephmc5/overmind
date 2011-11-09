@@ -1,0 +1,81 @@
+resources:
+  - Package:
+     - name: python-virtualenv
+     - name: apache2
+     - name: libapache2-mod-wsgi
+     - name: rabbitmq-server
+
+  - Group:
+      name: overmind
+
+  - User:
+      name: overmind
+      group: overmind
+
+
+  - Directory:
+      name: /home/overmind
+      mode: 0755
+
+  - Directory:
+      name: /home/overmind/.ssh
+      mode: 0755
+
+  - File:
+      name: /home/overmind/.ssh/id_rsa.pub
+
+
+  - Directory:
+      name: /var/local/overmind
+      owner: overmind
+      mode: 0755
+
+  - Execute:
+      name: virtualenv
+      command: virtualenv --no-site-packages /var/local/overmind
+      user: overmind
+      creates: /var/local/overmind/bin/pip
+
+  - Execute:
+      name: pip
+      command: /var/local/overmind/bin/pip install -r requirements.txt
+      user: overmind
+      cwd: /vagrant
+
+  - Execute:
+      name: syncdb
+      command: /var/local/overmind/bin/python overmind/manage.py syncdb
+      user: overmind
+      cwd: /vagrant
+
+  - File:
+      name: /var/local/overmind/django.wsgi
+      template: contrib/yaybu/django.wsgi.j2
+      template_args:
+        project_root: /vagrant/
+        venv_root: /var/local/overmind
+
+  - File:
+      name: /etc/apache2/sites-enabled/overmind
+      template: contrib/yaybu/apache.conf.j2
+      template_args:
+        project_root: /vagrant/
+
+  - File:
+      name: /etc/apache2/sites-enabled/000-default
+      policy: remove
+
+  - Execute:
+      name: apache-restart
+      command: /etc/init.d/apache2 restart
+
+  - File:
+      name: /etc/init/djcelery.conf
+      template: contrib/yaybu/djcelery.conf.j2
+      template_args:
+        project_root: /vagrant/
+        venv_root: /var/local/overmind
+
+  - Service:
+      name: djcelery
+
