@@ -32,9 +32,7 @@ See the wiki for architectural info and to know more about the future direction 
 ### Example installation on Debian/Ubuntu
 
 * `sudo apt-get install rabbitmq-server`
-* `sudo pip install django`
-* `sudo pip install django-celery`
-* `sudo pip install apache-libcloud`
+* `sudo pip install django==1.3.2 httplib2 simplejson IPy django-celery apache-libcloud``
 
 Install Overmind
 
